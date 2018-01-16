@@ -62,7 +62,7 @@ export default class {
 
         const spawn = execa.stdout(
           cargoPath,
-          [...cargoCommand, '--message-format', 'JSON'],
+          cargoCommand,
           { timeout: execTimeout, cwd },
         );
 

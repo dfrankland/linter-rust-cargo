@@ -7,12 +7,12 @@ export default {
   },
   cargoCommand: {
     title: 'Cargo Command',
-    description: 'Use `cargo --help` to see all available commands and options; separated by commas (`,`).',
+    description: 'Use `cargo --help` to see all available commands and options; separated by commas (`,`). Must use `--message-format, JSON` somewhere, otherwise this will break.',
     type: 'array',
     items: {
       type: 'string',
     },
-    default: ['test', '--all', '--jobs', '2'],
+    default: ['check', '--all', '--jobs', '2', '--message-format', 'JSON'],
   },
   cargoManifestGlob: {
     title: 'Cargo Manifest Filename Glob',
