@@ -5,7 +5,7 @@ import { CompositeDisposable } from 'atom'; // eslint-disable-line
 import globby from 'globby';
 import execa from 'execa';
 import uuidv4 from 'uuid/v4';
-import config from './config';
+import config from '../config';
 
 const linter = 'linter-rust-cargo';
 
