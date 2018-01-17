@@ -1,5 +1,6 @@
 import babel from 'rollup-plugin-babel';
 import nodeResolve from 'rollup-plugin-node-resolve';
+import json from 'rollup-plugin-json';
 import { dependencies } from './package.json';
 
 export default {
@@ -11,6 +12,7 @@ export default {
   },
   plugins: [
     nodeResolve(),
+    json(),
     babel({
       babelrc: false,
       presets: [
