@@ -164,12 +164,19 @@ export default class {
                 return `https://doc.rust-lang.org/error-index.html#${code}`;
               }
 
-              const [childWithUrl] = children.filter((
-                ({ childMessage }) => /\bhttps?:\/\/\S+/.test(childMessage)
-              ));
-              if (childWithUrl) {
-                return childWithUrl.match(/\bhttps?:\/\/\S+/)[0];
-              }
+              const [url] = children.reduce(
+                (allUrls, { message: childMessage }) => {
+                  if (!childMessage) return allUrls;
+
+                  const matches = childMessage.match(/\bhttps?:\/\/\S+/);
+                  if (!matches) return allUrls;
+
+                  return [...allUrls, matches[0]];
+                },
+                [],
+              );
+
+              if (url) return url;
 
               if (code) {
                 return `https://manishearth.github.io/rust-internals-docs/rustc/lint/builtin/static.${code.toUpperCase()}.html`;
