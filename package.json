@@ -1,6 +1,6 @@
 {
   "name": "linter-rust-cargo",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Rust Cargo linter that's fast.",
   "keywords": [
     "linter-american",
