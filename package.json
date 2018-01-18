@@ -3,8 +3,9 @@
   "version": "1.0.1",
   "description": "Rust Cargo linter that's fast.",
   "keywords": [
-    "linter-american",
-    "american"
+    "linter",
+    "rust",
+    "cargo"
   ],
   "main": "./dist/index.js",
   "files": [
