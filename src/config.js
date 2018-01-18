@@ -1,13 +1,21 @@
 export default {
-  cargoPath: {
-    title: 'Cargo Path',
-    description: 'Path to Rust\'s package manager `cargo`',
+  cargoCommandPath: {
+    title: 'Cargo Command Path',
+    description: 'Path to Rust\'s package manager `cargo`.',
     type: 'string',
     default: 'cargo',
   },
-  cargoCommand: {
-    title: 'Cargo Command',
-    description: 'Use `cargo --help` to see all available commands and options; separated by commas (`,`). Must use `--message-format, JSON` somewhere, otherwise this will break.',
+  cargoCommandArguments: {
+    title: 'Cargo Command Arguments',
+    description: `
+Use \`cargo --help\` to see all available commands and options; separated by commas (\`,\`)
+.
+
+**Must use \`--message-format, JSON\` somewhere, otherwise this will break
+.**
+
+Example of \`clippy\` command arguments: \`clippy, --all, --jobs, 2, --message-format, JSON, --, -D, clippy\`
+`,
     type: 'array',
     items: {
       type: 'string',
@@ -22,7 +30,12 @@ export default {
   },
   disabledLints: {
     title: 'Disabled Lints',
-    description: 'Lint codes to be ignored; separated by commas (`,`).',
+    description: `\
+Lint codes to be ignored; separated by commas (\`,\`)
+.
+
+Example of ignoring compiler lints, clippy lints, and compiler errors: \`unused_imports, match_ref_pats, E0463\`
+`,
     type: 'array',
     items: {
       type: 'string',

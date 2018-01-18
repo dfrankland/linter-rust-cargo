@@ -9,8 +9,8 @@ export default ({
   cargoManifests = [],
   runningProcesses = new Map(),
   config: {
-    cargoPath = '',
-    cargoCommand = [],
+    cargoCommandPath = '',
+    cargoCommandArguments = [],
     execTimeout = 0,
   } = {},
 }) => (
@@ -22,8 +22,8 @@ export default ({
 
       // Create new `cargo` command child process.
       const spawn = execa.stdout(
-        cargoPath,
-        cargoCommand,
+        cargoCommandPath,
+        cargoCommandArguments,
         { timeout: execTimeout, cwd },
       );
 
