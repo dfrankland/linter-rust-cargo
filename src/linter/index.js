@@ -3,6 +3,7 @@
 import { resolve as resolvePath } from 'path';
 import { CompositeDisposable } from 'atom'; // eslint-disable-line
 import globby from 'globby';
+import tempy from 'tempy';
 import { name } from '../../package.json';
 import config from '../config';
 import spawnCargoCommands from './spawnCargoCommands';
@@ -25,6 +26,8 @@ export default class {
         ));
       }
     ));
+
+    this.targetDir = tempy.directory();
   }
 
   // Stop subscribing to Atom for config when Linter object is destroyed.
@@ -52,7 +55,7 @@ export default class {
 
     // Returns an array of arrays with JSON returned by `cargo` commands.
     const messageGroups = await Promise.all((
-      spawnCargoCommands({ cargoManifests, config: this.config })
+      spawnCargoCommands({ cargoManifests, config: this.config, targetDir: this.targetDir })
     ));
 
     // Flatten array of arrays of JSON objects to a single array of JSON

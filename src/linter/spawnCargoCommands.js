@@ -13,6 +13,7 @@ export default ({
     cargoCommandArguments = [],
     execTimeout = 0,
   } = {},
+  targetDir,
 }) => (
   cargoManifests.map((
     async (manifestPath) => {
@@ -24,7 +25,13 @@ export default ({
       const spawn = execa.stdout(
         cargoCommandPath,
         cargoCommandArguments,
-        { timeout: execTimeout, cwd },
+        {
+          timeout: execTimeout,
+          cwd,
+          env: {
+            CARGO_TARGET_DIR: targetDir,
+          },
+        },
       );
 
       // Add new child process to `runningProcesses`.
