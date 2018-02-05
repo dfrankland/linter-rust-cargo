@@ -22,11 +22,25 @@ Example of \`clippy\` command arguments: \`clippy, --all, --jobs, 2, --message-f
     },
     default: ['check', '--all', '--jobs', '2', '--message-format', 'JSON'],
   },
-  cargoManifestGlob: {
-    title: 'Cargo Manifest Filename Glob',
-    description: 'Used to find and run Cargo on all crates in a project.',
-    type: 'string',
-    default: '**/Cargo.toml',
+  cargoManifestGlobs: {
+    title: 'Cargo Manifest Filename Globs',
+    description: `\
+Globs to find Cargo manifest files; separated by commas (\`,\`)
+.
+
+Used to find and run Cargo on all crates in a project.
+`,
+    type: 'array',
+    items: {
+      type: 'string',
+    },
+    default: ['*/Cargo.toml'],
+  },
+  cargoManifestGlobsGitIgnore: {
+    title: 'Cargo Manifest Filename Globs - Respect `.gitignore` Patterns',
+    description: 'Respect ignore patterns in `.gitignore` files that apply to the globbed files.',
+    type: 'boolean',
+    default: true,
   },
   disabledLints: {
     title: 'Disabled Lints',

@@ -3,7 +3,7 @@
 import { resolve as resolvePath } from 'path';
 import { CompositeDisposable } from 'atom'; // eslint-disable-line
 import globby from 'globby';
-import tempy from 'tempy';
+import commondir from 'commondir';
 import { name } from '../../package.json';
 import config from '../config';
 import spawnCargoCommands from './spawnCargoCommands';
@@ -37,25 +37,36 @@ export default class {
   runningProcesses = new Map();
 
   lint = async () => {
-    // Kill any running `cargo` command child processes, before re-running.
-    this.runningProcesses.forEach((id, runningProcess, runningProcesses) => {
-      if (runningProcess && runningProcess.kill) runningProcess.kill();
-      if (runningProcesses.has(id)) runningProcesses.delete(id);
-    });
-
     // Get all `Cargo.toml` manifests in the project.
-    const cargoManifests = await globby((
-      atom.project.getDirectories().map((
-        ({ realPath = '' }) => resolvePath(
-          realPath,
-          this.config.cargoManifestGlob,
-        )
-      ))
+    const atomProjectDirectories = atom.project.getDirectories().map((
+      ({ realPath = '' }) => realPath
     ));
+    const globPatterns = this.config.cargoManifestGlobs.reduce(
+      (allPatterns, nextGlob) => [
+        ...allPatterns,
+        ...atomProjectDirectories.map((
+          atomProjectDirectory => (
+            resolvePath(atomProjectDirectory, nextGlob)
+          )
+        )),
+      ],
+      [],
+    );
+    const cargoManifests = await globby(
+      globPatterns,
+      {
+        cwd: commondir(atomProjectDirectories),
+        gitignore: this.config.cargoManifestGlobsGitIgnore,
+      },
+    );
 
     // Returns an array of arrays with JSON returned by `cargo` commands.
     const messageGroups = await Promise.all((
-      spawnCargoCommands({ cargoManifests, config: this.config, targetDir: this.targetDir })
+      spawnCargoCommands({
+        cargoManifests,
+        runningProcesses: this.runningProcesses,
+        config: this.config,
+      })
     ));
 
     // Flatten array of arrays of JSON objects to a single array of JSON

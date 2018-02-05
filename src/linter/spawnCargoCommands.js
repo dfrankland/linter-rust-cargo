@@ -1,4 +1,6 @@
-import { dirname } from 'path';
+/* global atom:true */
+
+import { dirname, resolve as resolvePath } from 'path';
 import execa from 'execa';
 import uuidv4 from 'uuid/v4';
 
@@ -14,15 +16,21 @@ export default ({
     execTimeout = 0,
   } = {},
   targetDir,
-}) => (
-  cargoManifests.map((
+}) => {
+  // Kill any running `cargo` command child processes, before re-running.
+  runningProcesses.forEach((runningProcess, id, map) => {
+    if (runningProcess && runningProcess.kill) runningProcess.kill();
+    map.delete(id);
+  });
+
+  return cargoManifests.map((
     async (manifestPath) => {
       // Get directory of `Cargo.toml` manifest file. This directory is where
       // the `cargo` command child process will be run from.
       const cwd = dirname(manifestPath);
 
       // Create new `cargo` command child process.
-      const spawn = execa.stdout(
+      const spawn = execa(
         cargoCommandPath,
         cargoCommandArguments,
         {
@@ -42,8 +50,11 @@ export default ({
       const result = await (async () => {
         try {
           // No errors! Files passed all lints and compiled properly.
-          return await spawn;
+          return await spawn.then(x => x.stdout);
         } catch (err) {
+          // Inspect why the process is killed in dev mode.
+          if (atom.inDevMode()) console.info('linter-rust-cargo process ended', { ...err }); // eslint-disable-line no-console
+
           // Some errors, either lints or compilation problems.
           if (err.code === 101) return err;
 
@@ -59,7 +70,7 @@ export default ({
       })();
 
       // Job completed remove it from the the `runningProcesses`.
-      if (runningProcesses.has(id)) runningProcesses.delete(id, spawn);
+      runningProcesses.delete(id);
 
       // The result of `cargo` commands will always be a large string with JSON
       // objects seperated by newline characters.
@@ -79,5 +90,5 @@ export default ({
         [],
       );
     }
-  ))
-);
+  ));
+};

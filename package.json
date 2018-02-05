@@ -37,9 +37,9 @@
   "homepage": "https://github.com/dfrankland/linter-rust-cargo#readme",
   "contributors": [],
   "dependencies": {
+    "commondir": "^1.0.1",
     "execa": "^0.9.0",
     "globby": "^7.1.1",
-    "tempy": "^0.2.1",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
