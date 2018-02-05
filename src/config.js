@@ -22,6 +22,12 @@ Example of \`clippy\` command arguments: \`clippy, --all, --jobs, 2, --message-f
     },
     default: ['check', '--all', '--jobs', '2', '--message-format', 'JSON'],
   },
+  cargoTargetDirectory: {
+    title: 'Cargo Target Directory',
+    description: 'Directory to target when running the `cargo` command, relative to the Cargo manifest file.',
+    type: 'string',
+    default: './target',
+  },
   cargoManifestGlobs: {
     title: 'Cargo Manifest Filename Globs',
     description: `\

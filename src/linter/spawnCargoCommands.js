@@ -14,8 +14,8 @@ export default ({
     cargoCommandPath = '',
     cargoCommandArguments = [],
     execTimeout = 0,
+    cargoTargetDirectory = './target',
   } = {},
-  targetDir,
 }) => {
   // Kill any running `cargo` command child processes, before re-running.
   runningProcesses.forEach((runningProcess, id, map) => {
@@ -37,7 +37,7 @@ export default ({
           timeout: execTimeout,
           cwd,
           env: {
-            CARGO_TARGET_DIR: targetDir,
+            CARGO_TARGET_DIR: resolvePath(cwd, cargoTargetDirectory),
           },
         },
       );

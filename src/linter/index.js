@@ -26,8 +26,6 @@ export default class {
         ));
       }
     ));
-
-    this.targetDir = tempy.directory();
   }
 
   // Stop subscribing to Atom for config when Linter object is destroyed.
