@@ -51,7 +51,6 @@ export default class {
   runningProcesses = new Map();
 
   lint = async () => {
-
     // Returns an array of arrays with JSON returned by `cargo` commands.
     const messageGroups = await Promise.all((
       spawnCargoCommands({
