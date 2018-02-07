@@ -2,6 +2,7 @@
 
 import Linter from './linter';
 import config from './config';
+import { name } from '../package.json';
 
 export { config };
 
@@ -26,11 +27,11 @@ export const provideLinter = () => {
     lint: () => {
       if (!activated) return [];
 
-      if (atom.inDevMode()) console.time('lint-rust-cargo'); // eslint-disable-line no-console
+      if (atom.inDevMode()) console.time(name); // eslint-disable-line no-console
 
       const results = linter.lint();
 
-      if (atom.inDevMode()) console.timeEnd('lint-rust-cargo'); // eslint-disable-line no-console
+      if (atom.inDevMode()) console.timeEnd(name); // eslint-disable-line no-console
 
       return results;
     },
