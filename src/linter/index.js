@@ -1,19 +1,18 @@
 /* global atom:true */
 
-import { resolve as resolvePath } from 'path';
 import { CompositeDisposable } from 'atom'; // eslint-disable-line
-import globby from 'globby';
-import commondir from 'commondir';
 import { name } from '../../package.json';
 import config from '../config';
+import getCargoManifests from './getCargoManifests';
 import spawnCargoCommands from './spawnCargoCommands';
 import messageConverter from './messageConverter';
 
 export default class {
   constructor() {
     // Subscribe to Atom to receive user configured config.
-    this.config = {};
     this.subscriptions = new CompositeDisposable();
+
+    this.config = {};
     Object.keys(config).forEach((
       (key) => {
         this.subscriptions.add((
@@ -26,6 +25,23 @@ export default class {
         ));
       }
     ));
+
+    (async () => {
+      this.cargoManifests = await getCargoManifests({
+        config: this.config,
+        projectPaths: atom.project.getPaths(),
+      });
+    })();
+    this.subscriptions.add((
+      atom.project.onDidChangePaths((
+        async (projectPaths) => {
+          this.cargoManifests = await getCargoManifests({
+            config: this.config,
+            projectPaths,
+          });
+        }
+      ))
+    ));
   }
 
   // Stop subscribing to Atom for config when Linter object is destroyed.
@@ -35,33 +51,11 @@ export default class {
   runningProcesses = new Map();
 
   lint = async () => {
-    // Get all `Cargo.toml` manifests in the project.
-    const atomProjectDirectories = atom.project.getDirectories().map((
-      ({ realPath = '' }) => realPath
-    ));
-    const globPatterns = this.config.cargoManifestGlobs.reduce(
-      (allPatterns, nextGlob) => [
-        ...allPatterns,
-        ...atomProjectDirectories.map((
-          atomProjectDirectory => (
-            resolvePath(atomProjectDirectory, nextGlob)
-          )
-        )),
-      ],
-      [],
-    );
-    const cargoManifests = await globby(
-      globPatterns,
-      {
-        cwd: commondir(atomProjectDirectories),
-        gitignore: this.config.cargoManifestGlobsGitIgnore,
-      },
-    );
 
     // Returns an array of arrays with JSON returned by `cargo` commands.
     const messageGroups = await Promise.all((
       spawnCargoCommands({
-        cargoManifests,
+        cargoManifests: this.cargoManifests,
         runningProcesses: this.runningProcesses,
         config: this.config,
       })
