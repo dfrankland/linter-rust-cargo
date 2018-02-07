@@ -3,6 +3,7 @@
 import { dirname, resolve as resolvePath } from 'path';
 import execa from 'execa';
 import uuidv4 from 'uuid/v4';
+import { name } from '../../package.json';
 
 // Takes an array of paths to `Cargo.toml` manifests, and returns an array of
 // promises that resolve to an array of JSON objects returned by each `cargo`
@@ -53,7 +54,7 @@ export default ({
           return await spawn.then(x => x.stdout);
         } catch (err) {
           // Inspect why the process is killed in dev mode.
-          if (atom.inDevMode()) console.info('linter-rust-cargo process ended', { ...err }); // eslint-disable-line no-console
+          if (atom.inDevMode()) console.info(`${name} process ended`, id, { ...err }); // eslint-disable-line no-console
 
           // Some errors, either lints or compilation problems.
           if (err.code === 101) return err;
