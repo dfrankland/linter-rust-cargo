@@ -40,7 +40,7 @@ Used to find and run Cargo on all crates in a project.
     items: {
       type: 'string',
     },
-    default: ['*/Cargo.toml'],
+    default: ['**/Cargo.toml'],
   },
   cargoManifestGlobsGitIgnore: {
     title: 'Cargo Manifest Filename Globs - Respect `.gitignore` Patterns',
