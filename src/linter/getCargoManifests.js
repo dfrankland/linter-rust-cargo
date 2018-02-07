@@ -4,7 +4,7 @@ import commondir from 'commondir';
 import config from '../config';
 
 // Get all `Cargo.toml` manifests in the project.
-export default () => async ({
+export default async ({
   projectPaths,
   config: {
     cargoManifestGlobs = config.cargoManifestGlobs,
