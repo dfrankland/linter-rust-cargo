@@ -61,10 +61,15 @@ export default class {
       })
     ));
 
+    if (messageGroups.every(messageGroup => !messageGroup)) return null;
+
     // Flatten array of arrays of JSON objects to a single array of JSON
     // objects.
     const messages = messageGroups.reduce(
-      (allMessages, messageGroup) => [...allMessages, ...messageGroup],
+      (allMessages, messageGroup) => {
+        if (!messageGroup) return allMessages;
+        return [...allMessages, ...messageGroup];
+      },
       [],
     );
 

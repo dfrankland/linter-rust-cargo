@@ -67,11 +67,13 @@ export default ({
           if (!err.killed) console.error(err); // eslint-disable-line no-console
         }
 
-        return { stdout: '' };
+        return null;
       })();
 
       // Job completed remove it from the the `runningProcesses`.
       runningProcesses.delete(id);
+
+      if (!result) return result;
 
       // The result of `cargo` commands will always be a large string with JSON
       // objects seperated by newline characters.
