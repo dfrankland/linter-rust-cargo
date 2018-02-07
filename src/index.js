@@ -24,12 +24,12 @@ export const provideLinter = () => {
     scope: 'project',
     lintsOnChange: false,
     grammarScopes: ['source.rust'],
-    lint: () => {
+    lint: async () => {
       if (!activated) return [];
 
       if (atom.inDevMode()) console.time(name); // eslint-disable-line no-console
 
-      const results = linter.lint();
+      const results = await linter.lint();
 
       if (atom.inDevMode()) console.timeEnd(name); // eslint-disable-line no-console
 
